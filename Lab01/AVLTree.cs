@@ -15,17 +15,17 @@
 
         public int GetBalance(Nodo<T> n1) //Función para obtener el factor de balance de un nodo
         {
-            if(n1.Left == null && n1.Right == null)
+            if (n1.Left == null && n1.Right == null)
             {
                 return 0;
             }
 
-            else if(n1.Left == null)
+            else if (n1.Left == null)
             {
                 return -n1.Right!.Height;
             }
 
-            else if(n1.Right == null)
+            else if (n1.Right == null)
             {
                 return n1.Left!.Height;
             }
@@ -72,20 +72,20 @@
             Root = AddInAVL(Root!, item, condition1, condition2);
         }
 
-        private Nodo<T> AddInAVL(Nodo<T>? nodo, T item, Delegate condition1, Delegate condition2) 
+        private Nodo<T> AddInAVL(Nodo<T>? nodo, T item, Delegate condition1, Delegate condition2)
         {
-            if(nodo == null)
+            if (nodo == null)
             {
                 nodo = new Nodo<T>(item);
             }
             else
             {
-                if((int)condition1.DynamicInvoke(item, nodo!.Value) < 0) //El valor a agregar es menor al valor del nodo (condicion 1)
+                if ((int)condition1.DynamicInvoke(item, nodo!.Value) < 0) //El valor a agregar es menor al valor del nodo (condicion 1)
                 {
                     nodo.Left = AddInAVL(nodo.Left!, item, condition1, condition2);
                 }
 
-                else if((int)condition1.DynamicInvoke(item, nodo!.Value!) > 0)
+                else if ((int)condition1.DynamicInvoke(item, nodo!.Value!) > 0)
                 {
                     nodo.Right = AddInAVL(nodo.Right!, item, condition1, condition2);
                 }
@@ -118,7 +118,7 @@
                 return nodo;
             }
 
-            else if((int)CompareObj.DynamicInvoke(item, nodo.Value) < 0)
+            else if ((int)CompareObj.DynamicInvoke(item, nodo.Value) < 0)
             {
                 nodo.Left = DeleteInAVL(nodo.Left!, item, CompareObj);
             }
@@ -130,13 +130,13 @@
 
             else
             {
-                if(nodo.Left == null && nodo.Right == null) //Es una hoja
+                if (nodo.Left == null && nodo.Right == null) //Es una hoja
                 {
                     nodo = null;
                     return nodo;
                 }
 
-                else if(nodo.Left == null && nodo.Right != null)
+                else if (nodo.Left == null && nodo.Right != null)
                 {
                     Nodo<T> temp = nodo.Right;
                     nodo.Right = null;
@@ -166,9 +166,9 @@
         {
             SetHeight(nodo); //Se actualiza la altura del nodo
             int FE = GetBalance(nodo); //Se obtiene el factor de equilibrio del nodo
-            if(FE < -1)
+            if (FE < -1)
             {
-                if(GetBalance(nodo.Right!) < 0)
+                if (GetBalance(nodo.Right!) < 0)
                 {
                     nodo = LeftRotation(nodo);//Rotación izquierda
                 }
@@ -239,6 +239,27 @@
                 nodoTemp = nodoTemp.Right;
             }
             return nodoTemp;
+        }
+
+        public void QueryResults(Nodo<T> nodo, T item, Delegate condition1, List<T> Results)
+        {
+            if (item == null)
+            {
+                return;
+            }
+            if ((int)condition1.DynamicInvoke(item, nodo!.Value) < 0) //El valor a buscar es menor al valor del nodo (condicion 1)
+            {
+                QueryResults(nodo.Left!, item, condition1, Results);
+            }
+
+            else if ((int)condition1.DynamicInvoke(item, nodo!.Value) > 0)
+            {
+                QueryResults(nodo.Right!, item, condition1, Results);
+            }
+            else //Son iguales
+            {
+                Results.Add(nodo!.Value);
+            }
         }
     }
 }
