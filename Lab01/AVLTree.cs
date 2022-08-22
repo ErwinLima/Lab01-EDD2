@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lab01
+﻿namespace Lab01
 {
     public class AVLTree<T>
     {
@@ -73,12 +67,12 @@ namespace Lab01
             }
         }
 
-        public void Add(T item, Delegate CompareObj) //Procedimiento para añadir elementos al árbol
+        public void Add(T item, Delegate condition1, Delegate condition2) //Procedimiento para añadir elementos al árbol
         {
-            Root = AddInAVL(Root!, item, CompareObj);
+            Root = AddInAVL(Root!, item, condition1, condition2);
         }
 
-        private Nodo<T> AddInAVL(Nodo<T> nodo, T item, Delegate CompareObj) 
+        private Nodo<T> AddInAVL(Nodo<T>? nodo, T item, Delegate condition1, Delegate condition2) 
         {
             if(nodo == null)
             {
@@ -86,14 +80,25 @@ namespace Lab01
             }
             else
             {
-                if((int)CompareObj.DynamicInvoke(item, nodo.Value) <= 0) //El valor a agregar es menor al valor del nodo
+                if((int)condition1.DynamicInvoke(item, nodo!.Value) < 0) //El valor a agregar es menor al valor del nodo (condicion 1)
                 {
-                    nodo.Left = AddInAVL(nodo.Left!, item, CompareObj);
+                    nodo.Left = AddInAVL(nodo.Left!, item, condition1, condition2);
                 }
 
-                else if((int)CompareObj.DynamicInvoke(item, nodo.Value) > 0)
+                else if((int)condition1.DynamicInvoke(item, nodo!.Value!) > 0)
                 {
-                    nodo.Right = AddInAVL(nodo.Right!, item, CompareObj);
+                    nodo.Right = AddInAVL(nodo.Right!, item, condition1, condition2);
+                }
+                else //Son iguales
+                {
+                    if ((int)condition2.DynamicInvoke(item, nodo!.Value) < 0) //El valor a agregar es menor al valor del nodo
+                    {
+                        nodo.Left = AddInAVL(nodo.Left!, item, condition1, condition2);
+                    }
+                    else if ((int)condition2.DynamicInvoke(item, nodo!.Value!) > 0)
+                    {
+                        nodo.Right = AddInAVL(nodo.Right!, item, condition1, condition2);
+                    }
                 }
             }
 
