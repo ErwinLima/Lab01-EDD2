@@ -2,5 +2,5 @@
 
 public class Program
 {
-
+    string test;
 }
