@@ -106,55 +106,66 @@
             return nodo;
         }
 
-        public void Delete(T item, Delegate CompareObj)
+        public void Delete(T item, Delegate condition1, Delegate condition2)
         {
-            Root = DeleteInAVL(Root!, item, CompareObj);
+            Root = DeleteInAVL(Root!, item, condition1, condition2);
         }
 
-        public Nodo<T> DeleteInAVL(Nodo<T>? nodo, T item, Delegate CompareObj)
+        private Nodo<T> DeleteInAVL(Nodo<T>? nodo, T item, Delegate condition1, Delegate condition2)
         {
             if (nodo == null)
             {
                 return nodo;
             }
 
-            else if ((int)CompareObj.DynamicInvoke(item, nodo.Value) < 0)
+            else if ((int)condition1.DynamicInvoke(item, nodo.Value) < 0)
             {
-                nodo.Left = DeleteInAVL(nodo.Left!, item, CompareObj);
+                nodo.Left = DeleteInAVL(nodo.Left!, item, condition1, condition2);
             }
 
-            else if ((int)CompareObj.DynamicInvoke(item, nodo.Value) > 0)
+            else if ((int)condition1.DynamicInvoke(item, nodo.Value) > 0)
             {
-                nodo.Right = DeleteInAVL(nodo.Right!, item, CompareObj);
+                nodo.Right = DeleteInAVL(nodo.Right!, item, condition1, condition2);
             }
 
             else
             {
-                if (nodo.Left == null && nodo.Right == null) //Es una hoja
+                if ((int)condition2.DynamicInvoke(item, nodo.Value) < 0)
                 {
-                    nodo = null;
-                    return nodo;
+                    nodo.Left = DeleteInAVL(nodo.Left!, item, condition1, condition2);
                 }
-
-                else if (nodo.Left == null && nodo.Right != null)
+                else if ((int)condition2.DynamicInvoke(item, nodo.Value) > 0)
                 {
-                    Nodo<T> temp = nodo.Right;
-                    nodo.Right = null;
-                    nodo = temp;
+                    nodo.Right = DeleteInAVL(nodo.Right!, item, condition1, condition2);
                 }
-
-                else if (nodo.Left != null && nodo.Right == null)
-                {
-                    Nodo<T> temp = nodo.Left;
-                    nodo.Left = null;
-                    nodo = temp;
-                }
-
                 else
                 {
-                    Nodo<T>? temp = RightestfromLeft(nodo.Left!);
-                    nodo.Value = temp!.Value;
-                    nodo.Left = DeleteInAVL(nodo.Left!, temp.Value, CompareObj);
+                    if (nodo.Left == null && nodo.Right == null) //Es una hoja
+                    {
+                        nodo = null;
+                        return nodo;
+                    }
+
+                    else if (nodo.Left == null && nodo.Right != null)
+                    {
+                        Nodo<T> temp = nodo.Right;
+                        nodo.Right = null;
+                        nodo = temp;
+                    }
+
+                    else if (nodo.Left != null && nodo.Right == null)
+                    {
+                        Nodo<T> temp = nodo.Left;
+                        nodo.Left = null;
+                        nodo = temp;
+                    }
+
+                    else
+                    {
+                        Nodo<T>? temp = RightestfromLeft(nodo.Left!);
+                        nodo.Value = temp!.Value;
+                        nodo.Left = DeleteInAVL(nodo.Left!, temp.Value, condition1, condition2);
+                    }
                 }
             }
 
