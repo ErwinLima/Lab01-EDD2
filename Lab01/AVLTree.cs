@@ -173,7 +173,7 @@
             return nodo;
         }
 
-        public  void Patch(T item, Delegate condition1, Delegate condition2)
+        public  void Patch(T item, Delegate condition1, Delegate condition2) //Procedimiento para actualizar un elemento
         {
             if (item == null)
             {
@@ -216,6 +216,30 @@
                 return;
             }
             temporal.Value = item;
+        }
+
+        public void QueryResults(T item, Delegate condition1, List<T> Results) //Procedimiento que llena una lista con todos los registros que sean iguales al elemento ingresado
+        {
+            if (item == null)
+            {
+                return;
+            }
+            Nodo<T> temporal = this.Root;
+            bool flag = false;
+            while (temporal != null && flag != true)
+            {
+                if ((int)condition1.DynamicInvoke(item, temporal.Value) < 0)
+                {
+                    temporal = temporal.Left;
+                }else if((int)condition1.DynamicInvoke(item, temporal.Value) > 0)
+                {
+                    temporal = temporal.Right;
+                }
+                else
+                {
+                    Results.Add(temporal.Value);
+                }
+            }
         }
         private Nodo<T> ReBalance(Nodo<T> nodo)
         {
@@ -293,28 +317,7 @@
                 nodoTemp = nodoTemp.Right;
             }
             return nodoTemp;
-        }
-
-        public void QueryResults(Nodo<T> nodo, T item, Delegate condition1, List<T> Results)
-        {
-            if (item == null)
-            {
-                return;
-            }
-            if ((int)condition1.DynamicInvoke(item, nodo!.Value) < 0) //El valor a buscar es menor al valor del nodo (condicion 1)
-            {
-                QueryResults(nodo.Left!, item, condition1, Results);
-            }
-
-            else if ((int)condition1.DynamicInvoke(item, nodo!.Value) > 0)
-            {
-                QueryResults(nodo.Right!, item, condition1, Results);
-            }
-            else //Son iguales
-            {
-                Results.Add(nodo!.Value);
-            }
-        }
+        }        
     }
 }
 

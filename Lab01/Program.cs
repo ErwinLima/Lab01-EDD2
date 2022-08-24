@@ -13,6 +13,7 @@ public class Program
         try
         {
             AVLTree<Persona> arbolPersonas = new AVLTree<Persona>();
+            List<Persona> personas = new List<Persona>();
             string route = @"C:\Users\AndresLima\Desktop\input.csv";
             if (File.Exists(route))
             {
@@ -37,6 +38,11 @@ public class Program
                         }
                     }                    
                 }
+                Console.WriteLine("Ingrese el nombre de la persona que quiere buscar: ");
+                string? name = Console.ReadLine();
+                Persona temporal = new Persona();
+                temporal.name = name!;
+                arbolPersonas.QueryResults(temporal, Delegates.NameComparison, personas);
 
             }
         }
