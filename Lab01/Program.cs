@@ -23,7 +23,7 @@ public class Program
                     {
                         string[] fila = item.Split(";");
                         Persona? persona = JsonSerializer.Deserialize<Persona>(fila[1]);
-                        if (fila[0] == "INGRESAR")
+                        if (fila[0] == "INSERT")
                         {
                             arbolPersonas.Add(persona!, Delegates.NameComparison, Delegates.DPIComparison);
                         }
@@ -33,7 +33,7 @@ public class Program
                         }
                         else if (fila[0] == "PATCH")
                         {
-
+                            arbolPersonas.Patch(persona!, Delegates.NameComparison, Delegates.DPIComparison);
                         }
                     }                    
                 }
@@ -43,6 +43,7 @@ public class Program
         catch (Exception e)
         {
             Console.WriteLine("Ha ocurrido un error inesperado");
-        }        
+        }
+        Console.ReadKey();
     }
 }

@@ -106,7 +106,7 @@
             return nodo;
         }
 
-        public void Delete(T item, Delegate condition1, Delegate condition2)
+        public void Delete(T item, Delegate condition1, Delegate condition2) //Procedimiento para eliminar elementos del árbol
         {
             Root = DeleteInAVL(Root!, item, condition1, condition2);
         }
@@ -173,6 +173,50 @@
             return nodo;
         }
 
+        public  void Patch(T item, Delegate condition1, Delegate condition2)
+        {
+            if (item == null)
+            {
+                return;
+            }
+            if (IsEmpty())
+            {
+                return;
+            }
+            bool flag = false;
+            Nodo<T>? temporal = this.Root;           
+            while (temporal != null && flag != true)
+            {
+                if ((int)condition1.DynamicInvoke(item, temporal.Value) < 0)
+                {
+                    temporal = temporal.Left;
+                }
+                else if ((int)condition1.DynamicInvoke(item, temporal.Value) > 0)
+                {
+                    temporal = temporal.Right;
+                }
+                else
+                {
+                    if ((int)condition2.DynamicInvoke(item, temporal.Value) < 0)
+                    {
+                        temporal = temporal.Left;
+                    }
+                    else if ((int)condition2.DynamicInvoke(item, temporal.Value) > 0)
+                    {
+                        temporal = temporal.Right;
+                    }
+                    else
+                    {
+                        flag = true;
+                    }
+                }
+            }
+            if (temporal == null)
+            {
+                return;
+            }
+            temporal.Value = item;
+        }
         private Nodo<T> ReBalance(Nodo<T> nodo)
         {
             SetHeight(nodo); //Se actualiza la altura del nodo
@@ -203,7 +247,6 @@
 
             return nodo;
         }
-
         private Nodo<T> RightRotation(Nodo<T> nodo) //Rotación simple a la derecha
         {
             Nodo<T> temp = nodo.Left!;
