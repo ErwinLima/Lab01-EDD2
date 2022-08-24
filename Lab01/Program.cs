@@ -13,6 +13,7 @@ public class Program
         try
         {
             AVLTree<Persona> arbolPersonas = new AVLTree<Persona>();
+            List<Persona> personas = new List<Persona>();
             string route = @"C:\Users\AndresLima\Desktop\input.csv";
             if (File.Exists(route))
             {
@@ -37,7 +38,19 @@ public class Program
                         }
                     }                    
                 }
+                Console.WriteLine("Ingrese el nombre de la persona que quiere buscar: ");
+                string? name = Console.ReadLine();
+                Persona temporal = new Persona();
+                temporal.name = name!;
+                arbolPersonas.QueryResults(arbolPersonas.Root,temporal, Delegates.NameComparison, personas);
 
+                string line = "";
+                foreach (var item in personas)
+                {
+                    line += JsonSerializer.Serialize<Persona>(item) + "\n";
+                }
+                string output = @"C:\Users\AndresLima\Desktop\" + name +".text";
+                File.WriteAllText(output, line);
             }
         }
         catch (Exception e)

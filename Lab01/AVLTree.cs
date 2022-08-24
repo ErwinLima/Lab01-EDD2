@@ -217,6 +217,26 @@
             }
             temporal.Value = item;
         }
+
+        public void QueryResults(Nodo<T> temporal,T item, Delegate condition1, List<T> Results) //Procedimiento que llena una lista con todos los registros que sean iguales al elemento ingresado
+        {
+            if(temporal == null)
+            {
+                return;
+            }
+            if (temporal.Left != null)
+            {
+                QueryResults(temporal.Left, item, condition1, Results);
+            }
+            if ((int)condition1.DynamicInvoke(item,temporal.Value) == 0)
+            {
+                Results.Add(temporal.Value);
+            }
+            if (temporal.Right != null)
+            {
+                QueryResults(temporal.Right, item, condition1, Results);
+            }
+        }
         private Nodo<T> ReBalance(Nodo<T> nodo)
         {
             SetHeight(nodo); //Se actualiza la altura del nodo
@@ -293,28 +313,7 @@
                 nodoTemp = nodoTemp.Right;
             }
             return nodoTemp;
-        }
-
-        public void QueryResults(Nodo<T> nodo, T item, Delegate condition1, List<T> Results)
-        {
-            if (item == null)
-            {
-                return;
-            }
-            if ((int)condition1.DynamicInvoke(item, nodo!.Value) < 0) //El valor a buscar es menor al valor del nodo (condicion 1)
-            {
-                QueryResults(nodo.Left!, item, condition1, Results);
-            }
-
-            else if ((int)condition1.DynamicInvoke(item, nodo!.Value) > 0)
-            {
-                QueryResults(nodo.Right!, item, condition1, Results);
-            }
-            else //Son iguales
-            {
-                Results.Add(nodo!.Value);
-            }
-        }
+        }        
     }
 }
 
