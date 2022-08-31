@@ -67,7 +67,7 @@ public class Program
                     Console.WriteLine("¿Desea realizar otra búsqueda? Ingrese \'1\' o \'2\' ");
                     Console.WriteLine("1. Si");
                     Console.WriteLine("2. No");
-                    flag = Console.ReadLine();
+                    flag = Console.ReadLine()!;
                 } while (flag == "1");                                                
             }
         }
